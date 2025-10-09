@@ -26,6 +26,12 @@
 	</h2>
 	<div class="mt-8 text-center space-x-4">
     <a 
+        href="/grammar" 
+        class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
+    >
+        Browse Grammar Rules
+    </a>
+    <a 
         href="/languages" 
         class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
     >
@@ -38,7 +44,6 @@
         About
     </a>
 </div>
-
 	<Counter />
 </section>
 

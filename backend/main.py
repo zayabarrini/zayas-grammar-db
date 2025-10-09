@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from config.database import engine, Base
 from models.language_models import Language, GrammarConcept, GrammarRule
 from api.routes import languages  # Add this import
+from api.routes import grammar
 
 # Import all models to ensure they are registered with Base
 from models.language_models import *
@@ -28,6 +29,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(languages.router)  # Add this line
+app.include_router(grammar.router)
 
 @app.get("/")
 async def root():

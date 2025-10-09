@@ -38,3 +38,18 @@ class GrammarRule(Base):
     # Relationships
     language = relationship("Language")
     concept = relationship("GrammarConcept")
+    examples = relationship("RuleExample", back_populates="rule", cascade="all, delete-orphan")
+
+class RuleExample(Base):
+    __tablename__ = "rule_examples"
+    
+    example_id = Column(Integer, primary_key=True, autoincrement=True)
+    rule_id = Column(Integer, ForeignKey('grammar_rules.rule_id'), nullable=False)
+    example_sentence = Column(Text, nullable=False)
+    example_translation = Column(Text)
+    example_romanization = Column(Text)
+    example_gloss = Column(Text)
+    notes = Column(Text)
+    
+    # Relationships
+    rule = relationship("GrammarRule", back_populates="examples")
