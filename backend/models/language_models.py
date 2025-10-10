@@ -53,3 +53,45 @@ class RuleExample(Base):
     
     # Relationships
     rule = relationship("GrammarRule", back_populates="examples")
+    
+    
+# Replace the UDTreebankSentence class with this corrected version:
+
+class UDTreebankSentence(Base):
+    __tablename__ = "ud_treebank_sentences"
+    
+    sentence_id = Column(Integer, primary_key=True, autoincrement=True)
+    language_id = Column(String(2), ForeignKey('languages.language_id'), nullable=False)
+    sentence_text = Column(Text, nullable=False)
+    source = Column(String(100))  # Which UD treebank
+    treebank_metadata = Column(Text)  # Changed from 'metadata' to 'treebank_metadata'
+    
+    language = relationship("Language")
+
+class UDTokenAnalysis(Base):
+    __tablename__ = "ud_token_analysis"
+    
+    analysis_id = Column(Integer, primary_key=True, autoincrement=True)
+    sentence_id = Column(Integer, ForeignKey('ud_treebank_sentences.sentence_id'), nullable=False)
+    token_id = Column(String(20))  # Increased from 10 to 20
+    form = Column(String(500))     # Increased from 200 to 500
+    lemma = Column(String(500))    # Increased from 200 to 500
+    upos = Column(String(50))      # Increased from 20 to 50
+    xpos = Column(String(100))     # Increased from 20 to 100
+    feats = Column(Text)           # Already Text - good
+    head = Column(String(20))      # Increased from 10 to 20
+    deprel = Column(String(50))    # Increased from 20 to 50
+    
+    sentence = relationship("UDTreebankSentence")
+
+class GrammarPattern(Base):
+    __tablename__ = "grammar_patterns"
+    
+    pattern_id = Column(Integer, primary_key=True, autoincrement=True)
+    language_id = Column(String(2), ForeignKey('languages.language_id'), nullable=False)
+    pattern_type = Column(String(50), nullable=False)  # e.g., 'SVO', 'V2'
+    pattern_description = Column(Text)
+    frequency = Column(Integer)  # How common in UD data
+    example_sentence = Column(Text)
+    
+    language = relationship("Language")
