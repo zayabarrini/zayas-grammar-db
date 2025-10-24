@@ -1,48 +1,31 @@
 #!/bin/zsh
 
-# start.sh - Zsh version with better job control
+# start.sh - Launch using tmux sessions
 
 PROJECT_ROOT="$(pwd)"
 
-echo "Starting Zayas Grammar DB..."
+echo "Starting Zayas Grammar DB in tmux..."
 echo "Project root: $PROJECT_ROOT"
 
 # Check directories
 [[ ! -d "$PROJECT_ROOT/backend" ]] && { echo "Error: backend directory not found"; exit 1 }
 [[ ! -d "$PROJECT_ROOT/frontend" ]] && { echo "Error: frontend directory not found"; exit 1 }
 
-# Cleanup function
-cleanup() {
-    echo "\n🛑 Stopping all services..."
-    cd "$PROJECT_ROOT/backend" && sudo docker-compose down
-    kill %1 %2 %3 2>/dev/null
-    exit 0
-}
+# Create new tmux session
+tmux new-session -d -s zayas-grammar -n "Database" "cd $PROJECT_ROOT/backend && sudo docker-compose up -d; zsh"
 
-trap cleanup SIGINT
-
-# Start services
-echo "🐘 Starting Database..."
-cd "$PROJECT_ROOT/backend" && sudo docker-compose up -d
-
+# Wait for database
 sleep 5
 
-echo "🚀 Starting Backend..."
-cd "$PROJECT_ROOT/backend" && pipenv run uvicorn main:app --reload --port 8000 &!
+# Create new windows in the same session
+tmux new-window -t zayas-grammar:1 -n "Backend" "cd $PROJECT_ROOT/backend && pipenv shell && uvicorn main:app --reload --port 8000"
+tmux new-window -t zayas-grammar:2 -n "Frontend" "cd $PROJECT_ROOT/frontend && npm run dev -- --port 5173"
 
-sleep 3
-
-echo "💻 Starting Frontend..."
-cd "$PROJECT_ROOT/frontend" && npm run dev -- --port 5173 &!
-
-echo "✅ All services started!"
+# Attach to the session
+echo "✅ All services started in tmux session 'zayas-grammar'"
+echo "📊 To attach: tmux attach -t zayas-grammar"
+echo "📊 To detach: Ctrl+b, then d"
 echo "📊 Services:"
 echo "   - Database:  http://localhost:5432"
 echo "   - Backend:   http://localhost:8000"
 echo "   - Frontend:  http://localhost:5173"
-echo ""
-echo "🔍 Check jobs: jobs"
-echo "🛑 Stop all:  Ctrl+C"
-
-# Keep script running
-wait
