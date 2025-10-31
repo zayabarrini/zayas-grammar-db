@@ -160,3 +160,5 @@ Visit `http://localhost:5173/grammar` and verify:
 8. **Community contributions** for more rules
 
 Your multilingual grammar database is now a **powerful, research-backed language learning platform** that combines linguistic theory with practical pedagogy! The foundation is solid for any future enhancements. 🎊
+
+[See also: ZayaTransliteration](https://github.com/zayabarrini/Transliteration)
